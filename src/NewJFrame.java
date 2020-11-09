@@ -20,6 +20,11 @@ public class NewJFrame extends javax.swing.JFrame {
         initComponents();
 //        jPanel1.setLayout(new GridLayout(4,4));
     }
+    public NewJFrame(int n){
+        this.n=n;
+        initComponents();
+        
+    }
  
     /**
      * This method is called from within the constructor to initialize the form.
