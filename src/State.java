@@ -27,10 +27,10 @@ public class State {
 		index=index%emptyTiles.size();
 		if(index<0)
 			index*=-1;
-		System.out.println(index);
+//		System.out.println(index);
 		int i=(emptyTiles.get(index))/size;
 		int j=(emptyTiles.get(index))%size;
-		System.out.println(i+" "+j);
+//		System.out.println(i+" "+j);
 		board[i][j]=2;
 		emptyTiles.remove(index);
 		
