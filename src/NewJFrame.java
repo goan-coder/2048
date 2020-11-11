@@ -8,11 +8,14 @@
  *
  * @author Abhinav
  */
+import java.awt.event.KeyEvent;
+import java.awt.event.KeyListener;
 import java.util.Scanner;
 
 import javax.swing.*;
-public class NewJFrame extends javax.swing.JFrame {
+public class NewJFrame extends javax.swing.JFrame implements KeyListener {
  
+	private Game g;
     /**
      * Creates new form NewJFrame
      */
@@ -20,12 +23,20 @@ public class NewJFrame extends javax.swing.JFrame {
         initComponents();
 //        jPanel1.setLayout(new GridLayout(4,4));
     }
-    public NewJFrame(int n){
+    public NewJFrame(int n,Game g){
         this.n=n;
+        this.g=g;
         initComponents();
         
     }
- 
+
+    public void display(int board[][]){
+        for(int i=0;i<n;i++){
+            for(int j=0;j<n;j++){
+                arr[i*n+j].setText(Integer.toString(board[i][j]));
+            }
+        }
+    }
     /**
      * This method is called from within the constructor to initialize the form.
      * WARNING: Do NOT modify this code. The content of this method is always
@@ -34,7 +45,8 @@ public class NewJFrame extends javax.swing.JFrame {
     @SuppressWarnings("unchecked")
     // <editor-fold defaultstate="collapsed" desc="Generated Code">                          
     private void initComponents() {
- 
+    	addKeyListener(this);
+    	setFocusable(true);
         jPanel1 = new javax.swing.JPanel();
         jPanel1.setLayout(new java.awt.GridLayout());
         jPanel1.setLayout(new java.awt.GridLayout(n,n));
@@ -42,6 +54,7 @@ public class NewJFrame extends javax.swing.JFrame {
         for(int i=0;i<n*n;i++) {
         	arr[i]=new JTextField();
         	arr[i].setText("0");
+        	arr[i].setEditable(false);
         	jPanel1.add(arr[i]);
         }
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
@@ -113,6 +126,31 @@ public class NewJFrame extends javax.swing.JFrame {
 //    int[] intArray = new int[20];
     private JTextField[] arr;
     private static int n;
+    /** Handle the key typed event from the text field. */
+    public void keyTyped(KeyEvent e) {
+//        System.out.println("KEY TYPED: "+e);
+    }
+
+    /** Handle the key-pressed event from the text field. */
+    public void keyPressed(KeyEvent e) {
+        if(KeyEvent.getKeyText(e.getKeyCode())=="Left") {
+        	g.move(MoveDirection.LEFT);
+        }
+        else if(KeyEvent.getKeyText(e.getKeyCode())=="Right") {
+        	g.move(MoveDirection.RIGHT);
+        }
+        else if(KeyEvent.getKeyText(e.getKeyCode())=="Down") {
+        	g.move(MoveDirection.DOWN);
+        }
+        else if(KeyEvent.getKeyText(e.getKeyCode())=="Up") {
+        	g.move(MoveDirection.UP);
+        }
+    }
+
+    /** Handle the key-released event from the text field. */
+    public void keyReleased(KeyEvent e) {
+//        System.out.println("KEY RELEASED: "+e);
+    }
  
     // End of variables declaration                   
 }

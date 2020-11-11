@@ -17,8 +17,9 @@ public class Game {
 		startTime = LocalDateTime.now();
 		currentState = new State(size);
 		//// GUI init start
-		frame=new NewJFrame(n);
+		frame=new NewJFrame(n,this);
 		frame.setVisible(true);
+		frame.display(currentState.board);
 		//// GUI init end
 	}
 	
@@ -26,5 +27,6 @@ public class Game {
 		// TODO: maybe some more stuff to do here
 		previousState = currentState.clone();
 		currentState.move(dir);
+		frame.display(currentState.board);
 	}
 }

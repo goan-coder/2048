@@ -1,17 +1,42 @@
+import java.util.ArrayList;
+import java.util.Random;
+
 public class State {
-	private int[][] board;
+	int[][] board;
 	private int size;
 	private int maxPoints;
 	private int maxTile;
+	private ArrayList<Integer> emptyTiles;
 	
 	public State(int size) {
 		this.size = size;
 		// upper left corner is (0, 0)
 		board = new int[size][size];
+		emptyTiles=new ArrayList<Integer>();
 		fillZeros();
+		updateEmptyTiles();
+		insertRandomTile();
+		insertRandomTile();
 		// TODO: place 2s in 2 random positions
 	}
 	
+	private void insertRandomTile() {
+		// TODO Auto-generated method stub
+		Random rand = new Random(); 
+		int index=rand.nextInt();
+		index=index%emptyTiles.size();
+		if(index<0)
+			index*=-1;
+		System.out.println(index);
+		int i=(emptyTiles.get(index))/size;
+		int j=(emptyTiles.get(index))%size;
+		System.out.println(i+" "+j);
+		board[i][j]=2;
+		emptyTiles.remove(index);
+		
+		
+	}
+
 	private void fillZeros() {
 		for (int i = 0; i < size; ++i) {
 			for (int j = 0; j < size; ++j) {
@@ -20,10 +45,23 @@ public class State {
 		}
 	}
 
+	private void updateEmptyTiles(){
+		emptyTiles.clear();
+		for(int i=0;i<size;i++){
+			for(int j=0;j<size;j++){
+				if(board[i][j]==0){
+					emptyTiles.add(i*size+j);
+				}
+			}
+		}
+	}
+
 	public void move(MoveDirection dir) {
 		slideTiles(dir);
 		mergeTiles(dir);
 		slideTiles(dir);
+		updateEmptyTiles();
+		insertRandomTile();
 	}
 	
 	private void slideTiles(MoveDirection dir) {
@@ -130,6 +168,7 @@ public class State {
 	}
 	
 	public State clone() {
+		return null;
 		// TODO: return a independent clone of this state
 	}
 }
