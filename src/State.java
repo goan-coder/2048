@@ -101,21 +101,22 @@ public class State {
 			while (lastEmptyMovesLeft >= 0 && board[lastEmpty.getRow()][lastEmpty.getCol()] != 0) {
 				lastEmptyMovesLeft -= lastEmpty.next();
 			}
-			// if nothing to do here
-			if (lastEmptyMovesLeft <= 0) return;
-
-			iterMovesLeft -= iter.goToPos(lastEmpty);
-			iterMovesLeft -= iter.next();
-			// at this point lastEmpty will be at an empty tile
-			// and iter will be 1 position ahead of it
-			while (iterMovesLeft >= 0) {
-				if (board[iter.getRow()][iter.getCol()] != 0) {
-					board[lastEmpty.getRow()][lastEmpty.getCol()] = board[iter.getRow()][iter.getCol()];
-					board[iter.getRow()][iter.getCol()] = 0;
-					lastEmptyMovesLeft -= lastEmpty.next();
-				}
+			// if something to do here
+			if (lastEmptyMovesLeft > 0) {
+				iterMovesLeft -= iter.goToPos(lastEmpty);
 				iterMovesLeft -= iter.next();
+				// at this point lastEmpty will be at an empty tile
+				// and iter will be 1 position ahead of it
+				while (iterMovesLeft >= 0) {
+					if (board[iter.getRow()][iter.getCol()] != 0) {
+						board[lastEmpty.getRow()][lastEmpty.getCol()] = board[iter.getRow()][iter.getCol()];
+						board[iter.getRow()][iter.getCol()] = 0;
+						lastEmptyMovesLeft -= lastEmpty.next();
+					}
+					iterMovesLeft -= iter.next();
+				}
 			}
+
 			start.next();
 		}
 	}
@@ -153,9 +154,9 @@ public class State {
 			iter.goToPos(start);
 			int iterMovesLeft = size - 1;
 			while (iterMovesLeft > 0) {
-				if (board[iter.getRow()][iter.getCol()] == board[iter.getRow()+1][iter.getCol()+1]) {
+				if (board[iter.getRow()][iter.getCol()] == board[iter.getRow()+iter.getRowDelta()][iter.getCol()+iter.getColDelta()]) {
 					board[iter.getRow()][iter.getCol()] *= 2;
-					board[iter.getRow()+1][iter.getCol()+1] = 0;
+					board[iter.getRow()+iter.getRowDelta()][iter.getCol()+iter.getColDelta()] = 0;
 					iterMovesLeft -= iter.next();
 					iterMovesLeft -= iter.next();
 				}

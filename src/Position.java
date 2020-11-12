@@ -29,9 +29,17 @@ public class Position {
 		return col;
 	}
 
+	public int getRowDelta() {
+		return rowDelta;
+	}
+	
+	public int getColDelta() {
+		return colDelta;
+	}
+
 	public int goToPos(Position pos) {
 		// typically pos will always be "ahead" of this object
-		int numJumps = (col - pos.col)*colDelta + (row - pos.row)*rowDelta;
+		int numJumps = (pos.col - col)*colDelta + (pos.row - row)*rowDelta;
 		this.row = pos.row;
 		this.col = pos.col;
 		return numJumps;
