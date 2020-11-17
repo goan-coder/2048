@@ -4,7 +4,7 @@ import java.util.Random;
 public class State {
 	int[][] board;
 	private int size;
-	private int maxPoints;
+	private int score;
 	private int maxTile;
 	private ArrayList<Integer> emptyTiles;
 	
@@ -12,29 +12,29 @@ public class State {
 		this.size = size;
 		// upper left corner is (0, 0)
 		board = new int[size][size];
-		emptyTiles=new ArrayList<Integer>();
 		fillZeros();
+		emptyTiles=new ArrayList<Integer>();
+		maxTile = 2;
+		score = 0;
 		updateEmptyTiles();
 		insertRandomTile();
 		insertRandomTile();
-		// TODO: place 2s in 2 random positions
 	}
 	
 	private void insertRandomTile() {
-		// TODO Auto-generated method stub
+		if (emptyTiles.size() == 0) {
+			// can't insert a tile
+			return;
+		}
 		Random rand = new Random(); 
 		int index=rand.nextInt();
 		index=index%emptyTiles.size();
 		if(index<0)
 			index*=-1;
-//		System.out.println(index);
 		int i=(emptyTiles.get(index))/size;
 		int j=(emptyTiles.get(index))%size;
-//		System.out.println(i+" "+j);
 		board[i][j]=2;
 		emptyTiles.remove(index);
-		
-		
 	}
 
 	private void fillZeros() {
@@ -157,6 +157,9 @@ public class State {
 				if (board[iter.getRow()][iter.getCol()] == board[iter.getRow()+iter.getRowDelta()][iter.getCol()+iter.getColDelta()]) {
 					board[iter.getRow()][iter.getCol()] *= 2;
 					board[iter.getRow()+iter.getRowDelta()][iter.getCol()+iter.getColDelta()] = 0;
+
+					score += board[iter.getRow()][iter.getCol()];
+					maxTile = Math.max(maxTile, board[iter.getRow()][iter.getCol()]);
 					iterMovesLeft -= iter.next();
 					iterMovesLeft -= iter.next();
 				}
@@ -169,17 +172,27 @@ public class State {
 	}
 	
 	public State clone() {
-		return null;
-		// TODO: return a independent clone of this state
+		State ret = new State(size);
+		for (int i = 0; i < size; ++i) {
+			for (int j = 0; j < size; ++j) {
+				ret.board[i][j] = this.board[i][j];
+			}
+		}
+		ret.score = this.score;
+		ret.maxTile = this.maxTile;
+		ret.emptyTiles = new ArrayList<Integer>(this.emptyTiles);
+		return ret;
 	}
-
+	
 	public int getMaxTile() {
-		// TODO Auto-generated method stub
-		return 0;
+		return maxTile;
 	}
 
 	public int getNumEmptyTiles() {
-		// TODO Auto-generated method stub
 		return emptyTiles.size();
+	}
+	
+	public int getScore() {
+		return score;
 	}
 }
