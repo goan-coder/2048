@@ -11,8 +11,8 @@
 public class GameManager {
     Player p;
     Game g;
-    GameManager(String playerName,int n){
+    GameManager(String playerName,int n,int target,String s){
         p=new Player(playerName);
-        g=new Game(n);
+        g=new Game(n,target,s);
     }
 }

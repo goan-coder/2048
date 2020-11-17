@@ -172,4 +172,14 @@ public class State {
 		return null;
 		// TODO: return a independent clone of this state
 	}
+
+	public int getMaxTile() {
+		// TODO Auto-generated method stub
+		return 0;
+	}
+
+	public int getNumEmptyTiles() {
+		// TODO Auto-generated method stub
+		return emptyTiles.size();
+	}
 }
