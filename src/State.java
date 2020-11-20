@@ -6,6 +6,7 @@ public class State {
 	private int size;
 	private int score;
 	private int maxTile;
+	private int mergeStreak;
 	private ArrayList<Integer> emptyTiles;
 	
 	public State(int size) {
@@ -16,6 +17,7 @@ public class State {
 		emptyTiles=new ArrayList<Integer>();
 		maxTile = 2;
 		score = 0;
+		mergeStreak = 0;
 		updateEmptyTiles();
 		insertRandomTile();
 		insertRandomTile();
@@ -56,15 +58,22 @@ public class State {
 		}
 	}
 
-	public void move(MoveDirection dir) {
-		slideTiles(dir);
-		mergeTiles(dir);
-		slideTiles(dir);
+	public int move(MoveDirection dir) {
+		int moveCount, mergeCount;
+		moveCount = slideTiles(dir);
+		mergeCount = mergeTiles(dir);
+		moveCount += slideTiles(dir);
+			
 		updateEmptyTiles();
 		insertRandomTile();
+		
+		if (mergeCount > 0) mergeStreak++;
+		else mergeStreak = 0;
+		return moveCount + mergeCount;
 	}
 	
-	private void slideTiles(MoveDirection dir) {
+	private int slideTiles(MoveDirection dir) {
+		int tilesMoved = 0;
 		Position start, iter, lastEmpty;
 		switch(dir) {
 		case UP:
@@ -112,6 +121,7 @@ public class State {
 						board[lastEmpty.getRow()][lastEmpty.getCol()] = board[iter.getRow()][iter.getCol()];
 						board[iter.getRow()][iter.getCol()] = 0;
 						lastEmptyMovesLeft -= lastEmpty.next();
+						tilesMoved++;
 					}
 					iterMovesLeft -= iter.next();
 				}
@@ -119,10 +129,12 @@ public class State {
 
 			start.next();
 		}
+		return tilesMoved;
 	}
 	
-	private void mergeTiles(MoveDirection dir) {
+	private int mergeTiles(MoveDirection dir) {
 		Position start, iter;
+		int tilesMerged = 0;
 		switch(dir) {
 		case UP:
 			start = new Position(0, 0, 0, 1);
@@ -154,12 +166,15 @@ public class State {
 			iter.goToPos(start);
 			int iterMovesLeft = size - 1;
 			while (iterMovesLeft > 0) {
-				if (board[iter.getRow()][iter.getCol()] == board[iter.getRow()+iter.getRowDelta()][iter.getCol()+iter.getColDelta()]) {
+				if (board[iter.getRow()][iter.getCol()] != 0 &&
+						board[iter.getRow()][iter.getCol()] == board[iter.getRow()+iter.getRowDelta()][iter.getCol()+iter.getColDelta()]) {
 					board[iter.getRow()][iter.getCol()] *= 2;
 					board[iter.getRow()+iter.getRowDelta()][iter.getCol()+iter.getColDelta()] = 0;
 
 					score += board[iter.getRow()][iter.getCol()];
 					maxTile = Math.max(maxTile, board[iter.getRow()][iter.getCol()]);
+					tilesMerged++;
+					
 					iterMovesLeft -= iter.next();
 					iterMovesLeft -= iter.next();
 				}
@@ -169,6 +184,7 @@ public class State {
 			}
 			start.next();
 		}
+		return tilesMerged;
 	}
 	
 	public State clone() {
@@ -184,6 +200,12 @@ public class State {
 		return ret;
 	}
 	
+	// perc is in range [0, 1]
+	// denotes what fraction of the score should be added as bonus
+	public void addBonusPoints(float perc) {
+		score += (int)(perc * score);
+	}
+	
 	public int getMaxTile() {
 		return maxTile;
 	}
@@ -194,5 +216,9 @@ public class State {
 	
 	public int getScore() {
 		return score;
+	}
+	
+	public int getMergeStreak() {
+		return mergeStreak;
 	}
 }
