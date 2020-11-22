@@ -38,7 +38,7 @@ public class Game {
 			return;
 		State newState;
 		if(currentState.isEmpty(dir)) {
-			newState=currentState.clone();
+			newState=currentState.clone(0);
 			currentState.insert(newState,dir);
 			currentState=newState;
 			currentState.move(dir);
@@ -49,7 +49,7 @@ public class Game {
 		}
 		else {
 			newState=currentState.getRandomChild(dir);
-			newState=newState.clone();
+			newState=newState.clone(1);
 			newState.updateRandomTile();
 			currentState.insert(newState,dir);
 			currentState=newState;

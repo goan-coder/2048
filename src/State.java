@@ -206,7 +206,7 @@ public class State {
 		return tilesMerged;
 	}
 	
-	public State clone() {
+	public State clone(int flag) {
 		State ret = new State(size);
 		for (int i = 0; i < size; ++i) {
 			for (int j = 0; j < size; ++j) {
@@ -216,7 +216,10 @@ public class State {
 		ret.score = this.score;
 		ret.maxTile = this.maxTile;
 		ret.emptyTiles = new ArrayList<Integer>(this.emptyTiles);
-		ret.parentState=this;
+		if(flag==0)
+			ret.parentState=this;
+		else if(flag==1)
+			ret.parentState=this.parentState;
 		return ret;
 	}
 	
