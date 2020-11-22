@@ -14,6 +14,8 @@ public class State {
 	private ArrayList<State> upChildren;
 	private ArrayList<State> downChildren;
 	private int sumOfTiles;
+	private int randomTileRow;
+	private int randomTileCol;
 	
 	
 	public State(int size) {
@@ -54,6 +56,8 @@ public class State {
 		else
 			val=2;
 		board[i][j]=val;
+		randomTileRow = i;
+		randomTileCol = j;
 		sumOfTiles+=val;
 		emptyTiles.remove(index);
 	}
@@ -215,7 +219,11 @@ public class State {
 		}
 		ret.score = this.score;
 		ret.maxTile = this.maxTile;
+		ret.mergeStreak = this.mergeStreak;
+		ret.sumOfTiles = this.sumOfTiles;
 		ret.emptyTiles = new ArrayList<Integer>(this.emptyTiles);
+		ret.randomTileRow = this.randomTileRow;
+		ret.randomTileCol = this.randomTileCol;
 		if(flag==0)
 			ret.parentState=this;
 		else if(flag==1)
@@ -316,8 +324,10 @@ public class State {
 	}
 
 	public void updateRandomTile() {
-		// TODO Auto-generated method stub
-		
+		sumOfTiles -= board[randomTileRow][randomTileCol];
+		board[randomTileRow][randomTileCol] = 0;
+		updateEmptyTiles();
+		insertRandomTile();
 	}
 
 	public State getParentState() {
