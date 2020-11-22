@@ -1,12 +1,12 @@
 import java.time.Duration;
 import java.time.LocalDateTime;
+import java.util.Random;
 
 import javax.swing.JOptionPane;
 
 public class Game {
 	private String gameMode;
 	private State currentState;
-	private State previousState;
 	private int size;
 	private LocalDateTime startTime;
 	private Duration maxTime;
@@ -30,13 +30,30 @@ public class Game {
 		//// GUI init end
 	}
 	
-	public void move(MoveDirection dir) {
+	public void move(MoveDirection dir,Boolean flag) {
 		// TODO: maybe some more stuff to do here
+		// flag=true -> makeNewState instead of using existing
+		// flag=false -> useExistingState;
 		if(gameOver==true)
 			return;
-		
-		previousState = currentState.clone();
-		currentState.move(dir);
+		State newState;
+		if(currentState.isEmpty(dir)) {
+			newState=currentState.clone();
+			currentState.insert(newState,dir);
+			currentState=newState;
+			currentState.move(dir);
+		}
+		else if(flag==false)  {
+			newState=currentState.getRandomChild(dir);
+			currentState=newState;
+		}
+		else {
+			newState=currentState.getRandomChild(dir);
+			newState=newState.clone();
+			newState.updateRandomTile();
+			currentState.insert(newState,dir);
+			currentState=newState;
+		}
 		frame.display(currentState.board);
 		checkGameOver();
 	}
@@ -46,11 +63,19 @@ public class Game {
 			JOptionPane.showMessageDialog(null, "YOU WIN");
 			gameOver=true;
 		}
-		else if(currentState.getNumEmptyTiles()==0) {
+		else if(currentState.getNumEmptyTiles()==0 && currentState.noAdjacentsSame()) {
 			JOptionPane.showMessageDialog(null, "YOU LOSE");
 			gameOver=true;
 		}
 		
+	}
+
+	public void undo() {
+		// TODO Auto-generated method stub
+		if(currentState.hasParent()==false)
+			return;
+		currentState=currentState.getParentState();
+		frame.display(currentState.board);
 	}
 	
 }

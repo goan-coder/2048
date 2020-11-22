@@ -18,9 +18,9 @@ public class NewJFrame extends javax.swing.JFrame implements KeyListener {
 	private Game g;
 	private int target;
 	String gameMode;
-	private javax.swing.JButton jButton1;
+	private javax.swing.JButton undo;
 	private javax.swing.JButton lookahead;
-    private javax.swing.JButton jButton3;
+    private javax.swing.JButton resetLookahead;
     private javax.swing.JComboBox<String> jComboBox1;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel2;
@@ -59,6 +59,7 @@ public class NewJFrame extends javax.swing.JFrame implements KeyListener {
     private void initComponents() {
     	addKeyListener(this);
     	setFocusable(true);
+    	
         jPanel1 = new javax.swing.JPanel();
         jPanel1.setLayout(new java.awt.GridLayout(n,n));
         arr=new JTextField[n*n];
@@ -74,12 +75,14 @@ public class NewJFrame extends javax.swing.JFrame implements KeyListener {
         jTextField1 = new javax.swing.JTextField();
         jLabel2 = new javax.swing.JLabel();
         jTextField11 = new javax.swing.JTextField();
-        jButton1 = new javax.swing.JButton();
+        undo = new javax.swing.JButton();
         lookahead = new javax.swing.JButton();
         jComboBox1 = new javax.swing.JComboBox<>();
-        jButton3 = new javax.swing.JButton();
+        resetLookahead = new javax.swing.JButton();
  
-
+        undo.setFocusable(false);
+    	lookahead.setFocusable(false);
+    	resetLookahead.setFocusable(false);
  
         jLabel1.setText("Current Game Mode is:");
 
@@ -89,10 +92,10 @@ public class NewJFrame extends javax.swing.JFrame implements KeyListener {
         jTextField1.setText(gameMode);
         jTextField1.setEditable(false);
         jTextField11.setEditable(false);
-        jButton1.setText("UNDO");
-        jButton1.addActionListener(new java.awt.event.ActionListener() {
+        undo.setText("UNDO");
+        undo.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jButton1ActionPerformed(evt);
+                undoActionPerformed(evt);
             }
         });
 
@@ -105,10 +108,10 @@ public class NewJFrame extends javax.swing.JFrame implements KeyListener {
 
         jComboBox1.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "UP", "DOWN", "LEFT", "RIGHT" }));
 
-        jButton3.setText("RESET LOOKAHEAD");
-        jButton3.addActionListener(new java.awt.event.ActionListener() {
+        resetLookahead.setText("RESET LOOKAHEAD");
+        resetLookahead.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jButton3ActionPerformed(evt);
+                resetLookaheadActionPerformed(evt);
             }
         });
 
@@ -129,7 +132,7 @@ public class NewJFrame extends javax.swing.JFrame implements KeyListener {
                             .addComponent(jTextField11)))
                     .addGroup(layout.createSequentialGroup()
                         .addGap(68, 68, 68)
-                        .addComponent(jButton3)))
+                        .addComponent(resetLookahead)))
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
             .addGroup(layout.createSequentialGroup()
                 .addGap(55, 55, 55)
@@ -138,7 +141,7 @@ public class NewJFrame extends javax.swing.JFrame implements KeyListener {
                         .addComponent(jPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, 346, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
                     .addGroup(layout.createSequentialGroup()
-                        .addComponent(jButton1)
+                        .addComponent(undo)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                         .addComponent(lookahead)
                         .addGap(29, 29, 29)
@@ -158,11 +161,11 @@ public class NewJFrame extends javax.swing.JFrame implements KeyListener {
                     .addComponent(jTextField11, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addGap(30, 30, 30)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(jButton1)
+                    .addComponent(undo)
                     .addComponent(lookahead)
                     .addComponent(jComboBox1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addGap(43, 43, 43)
-                .addComponent(jButton3)
+                .addComponent(resetLookahead)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 50, Short.MAX_VALUE)
                 .addComponent(jPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, 213, javax.swing.GroupLayout.PREFERRED_SIZE))
         );
@@ -170,17 +173,18 @@ public class NewJFrame extends javax.swing.JFrame implements KeyListener {
         pack();
     }// </editor-fold>//GEN-END:initComponents
 
-    private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
+    private void undoActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_undoActionPerformed
         // TODO add your handling code here:
-    }//GEN-LAST:event_jButton1ActionPerformed
+    	g.undo();
+    }//GEN-LAST:event_undoActionPerformed
 
     private void lookaheadActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_lookaheadActionPerformed
         // TODO add your handling code here:
     }//GEN-LAST:event_lookaheadActionPerformed
 
-    private void jButton3ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton3ActionPerformed
+    private void resetLookaheadActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_resetLookaheadActionPerformed
         // TODO add your handling code here:
-    }//GEN-LAST:event_jButton3ActionPerformed
+    }//GEN-LAST:event_resetLookaheadActionPerformed
                         
  
     /**
@@ -233,17 +237,18 @@ public class NewJFrame extends javax.swing.JFrame implements KeyListener {
 
     /** Handle the key-pressed event from the text field. */
     public void keyPressed(KeyEvent e) {
+//    	System.out.println("key pressed "+e.getKeyCode());
         if(KeyEvent.getKeyText(e.getKeyCode())=="Left") {
-        	g.move(MoveDirection.LEFT);
+        	g.move(MoveDirection.LEFT,true);
         }
         else if(KeyEvent.getKeyText(e.getKeyCode())=="Right") {
-        	g.move(MoveDirection.RIGHT);
+        	g.move(MoveDirection.RIGHT,true);
         }
         else if(KeyEvent.getKeyText(e.getKeyCode())=="Down") {
-        	g.move(MoveDirection.DOWN);
+        	g.move(MoveDirection.DOWN,true);
         }
         else if(KeyEvent.getKeyText(e.getKeyCode())=="Up") {
-        	g.move(MoveDirection.UP);
+        	g.move(MoveDirection.UP,true);
         }
     }
 

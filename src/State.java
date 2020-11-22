@@ -8,6 +8,13 @@ public class State {
 	private int maxTile;
 	private int mergeStreak;
 	private ArrayList<Integer> emptyTiles;
+	private State parentState;
+	private ArrayList<State> leftChildren;
+	private ArrayList<State> rightChildren;
+	private ArrayList<State> upChildren;
+	private ArrayList<State> downChildren;
+	private int sumOfTiles;
+	
 	
 	public State(int size) {
 		this.size = size;
@@ -15,9 +22,15 @@ public class State {
 		board = new int[size][size];
 		fillZeros();
 		emptyTiles=new ArrayList<Integer>();
+		leftChildren = new ArrayList<State>();
+		rightChildren= new ArrayList<State>();
+		upChildren= new ArrayList<State>();
+		downChildren= new ArrayList<State>();
+		parentState=null;
 		maxTile = 2;
 		score = 0;
 		mergeStreak = 0;
+		sumOfTiles=0;
 		updateEmptyTiles();
 		insertRandomTile();
 		insertRandomTile();
@@ -35,7 +48,13 @@ public class State {
 			index*=-1;
 		int i=(emptyTiles.get(index))/size;
 		int j=(emptyTiles.get(index))%size;
-		board[i][j]=2;
+		int val=rand.nextInt();
+		if(val%2==1)
+			val=4;
+		else
+			val=2;
+		board[i][j]=val;
+		sumOfTiles+=val;
 		emptyTiles.remove(index);
 	}
 
@@ -197,6 +216,7 @@ public class State {
 		ret.score = this.score;
 		ret.maxTile = this.maxTile;
 		ret.emptyTiles = new ArrayList<Integer>(this.emptyTiles);
+		ret.parentState=this;
 		return ret;
 	}
 	
@@ -220,5 +240,89 @@ public class State {
 	
 	public int getMergeStreak() {
 		return mergeStreak;
+	}
+	
+	public Boolean noAdjacentsSame() {
+		for(int i=0;i<size;i++) {
+			for(int j=0;j<size;j++) {
+				if(i<size-1 && board[i][j]==board[i+1][j])
+					return false;
+				if(j<size-1 && board[i][j]==board[i][j+1])
+					return false;
+			}
+		}
+		return true;
+	}
+
+	public boolean isEmpty(MoveDirection dir) {
+		// TODO Auto-generated method stub
+		if(dir==MoveDirection.LEFT)
+			return leftChildren.isEmpty();
+		else if(dir==MoveDirection.RIGHT)
+			return rightChildren.isEmpty();
+		else if(dir==MoveDirection.UP)
+			return upChildren.isEmpty();
+		else
+			return downChildren.isEmpty();
+	}
+
+	public void insert(State newState, MoveDirection dir) {
+		// TODO Auto-generated method stub
+		if(dir==MoveDirection.LEFT)
+			leftChildren.add(newState);
+		else if(dir==MoveDirection.RIGHT)
+			rightChildren.add(newState);
+		else if(dir==MoveDirection.UP)
+			upChildren.add(newState);
+		else
+			downChildren.add(newState);
+		
+	}
+
+	public State getRandomChild(MoveDirection dir) {
+		// TODO Auto-generated method stub
+		Random rand = new Random(); 
+		if(dir==MoveDirection.LEFT) {
+			int index=rand.nextInt();
+			index=index%leftChildren.size();
+			if(index<0)
+				index*=-1;
+			return leftChildren.get(index);
+		}
+		else if(dir==MoveDirection.RIGHT) {
+			int index=rand.nextInt();
+			index=index%rightChildren.size();
+			if(index<0)
+				index*=-1;
+			return rightChildren.get(index);
+		}
+		else if(dir==MoveDirection.UP) {
+			int index=rand.nextInt();
+			index=index%upChildren.size();
+			if(index<0)
+				index*=-1;
+			return upChildren.get(index);
+		}
+		else {
+			int index=rand.nextInt();
+			index=index%downChildren.size();
+			if(index<0)
+				index*=-1;
+			return downChildren.get(index);
+		}
+	}
+
+	public void updateRandomTile() {
+		// TODO Auto-generated method stub
+		
+	}
+
+	public State getParentState() {
+		return parentState;
+	}
+
+	public boolean hasParent() {
+		// TODO Auto-generated method stub
+		return parentState!=null;
 	}
 }
