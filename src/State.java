@@ -29,19 +29,18 @@ public class State {
 		upChildren= new ArrayList<State>();
 		downChildren= new ArrayList<State>();
 		parentState=null;
-		maxTile = 2;
 		score = 0;
 		mergeStreak = 0;
 		sumOfTiles=0;
 		updateEmptyTiles();
-		insertRandomTile();
-		insertRandomTile();
+		maxTile = insertRandomTile();
+		maxTile = Math.max(maxTile, insertRandomTile());
 	}
 	
-	private void insertRandomTile() {
+	private int insertRandomTile() {
 		if (emptyTiles.size() == 0) {
 			// can't insert a tile
-			return;
+			return 0;
 		}
 		Random rand = new Random(); 
 		int index=rand.nextInt();
@@ -60,6 +59,7 @@ public class State {
 		randomTileCol = j;
 		sumOfTiles+=val;
 		emptyTiles.remove(index);
+		return val;
 	}
 
 	private void fillZeros() {
