@@ -338,4 +338,19 @@ public class State {
 		// TODO Auto-generated method stub
 		return parentState!=null;
 	}
+	
+	public int getSumOfTiles() {
+		return sumOfTiles;
+	}
+	
+	public String toString() {
+		StringBuilder sb = new StringBuilder();
+		for (int i = 0; i < size; ++i) {
+			for (int j = 0; j < size; ++j) {
+				sb.append(String.format("%5d ", board[i][j]));
+			}
+			sb.append('\n');
+		}
+		return sb.toString();
+	}
 }

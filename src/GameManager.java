@@ -13,6 +13,6 @@ public class GameManager {
     Game g;
     GameManager(String playerName,int n,int target,String s){
         p=new Player(playerName);
-        g=new Game(n,target,s);
+        g=Game.fromGameMode(n,target,s);
     }
 }

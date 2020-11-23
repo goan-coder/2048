@@ -55,7 +55,7 @@ public class Frame1 extends javax.swing.JFrame {
 
         jComboBox1.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "32", "64", "128", "256", "512", "1024", "2048", "4096", " " }));
 
-        jComboBox2.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Classic", "Practice", "XXX", "YYY", "ZZZ" }));
+        jComboBox2.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Classic", "Practice", "Simulation", "YYY", "ZZZ" }));
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);

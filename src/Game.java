@@ -6,13 +6,13 @@ import javax.swing.JOptionPane;
 
 public class Game {
 	private String gameMode;
-	private State currentState;
+	protected State currentState;
 	private int size;
 	private LocalDateTime startTime;
 	private Duration maxTime;
-	private int winningTile;
+	protected int winningTile;
 	private boolean canUndo;
-	private boolean gameOver;
+	protected boolean gameOver;
 	
 	private NewJFrame frame;
 	
@@ -28,6 +28,12 @@ public class Game {
 		frame.display(currentState.board);
 		gameOver=false;
 		//// GUI init end
+	}
+	
+	public static Game fromGameMode(int n, int target, String s) {
+		if (s.equals("Simulation"))
+			return new SimulationGame(n, target, s);
+		else return new Game(n, target, s);
 	}
 	
 	public void move(MoveDirection dir,Boolean flag) {
@@ -58,7 +64,7 @@ public class Game {
 		checkGameOver();
 	}
 	
-	private void checkGameOver() {
+	public void checkGameOver() {
 		if(currentState.getMaxTile()>=winningTile) {
 			JOptionPane.showMessageDialog(null, "YOU WIN");
 			gameOver=true;
