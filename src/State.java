@@ -1,23 +1,70 @@
 import java.util.ArrayList;
 import java.util.Random;
-
+/**
+ * Encapsulates state of the game.
+ */
 public class State {
+	/**
+	 * Stores the game board as a 2D matrix
+	 */
 	int[][] board;
-	private int size;
-	private int score;
-	private int maxTile;
-	private int mergeStreak;
-	private ArrayList<Integer> emptyTiles;
-	private State parentState;
-	private ArrayList<State> leftChildren;
-	private ArrayList<State> rightChildren;
-	private ArrayList<State> upChildren;
-	private ArrayList<State> downChildren;
-	private int sumOfTiles;
-	private int randomTileRow;
-	private int randomTileCol;
+	/**
+	 * The dimensions of the board is size x size
+	 */
+	protected int size;
+	/**
+	 * The score of the player.
+	 * Calculated as done in the original 2048 game, based on the sum of values of merged tiles.
+	 */
+	protected int score;
+	/**
+	 * The highest tile currently on the board.
+	 */
+	protected int maxTile;
+
+	/**
+	 * Stores the list of indexes empty tiles.
+	 */
+	protected ArrayList<Integer> emptyTiles;
+	/**
+	 * Link to the parent state.
+	 */
+	protected State parentState;
+	/**
+	 * List of enumerated children on making a LEFT move on the current state.
+	 */
+	protected ArrayList<State> leftChildren;
+	/**
+	 * List of enumerated children on making a RIGHT move on the current state.
+	 */
+	protected ArrayList<State> rightChildren;
+	/**
+	 * List of enumerated children on making a UP move on the current state.
+	 */
+	protected ArrayList<State> upChildren;
+	/**
+	 * List of enumerated children on making a DOWN move on the current state.
+	 */
+	protected ArrayList<State> downChildren;
+	/**
+	 * Stores the sum of all the tiles.
+	 */
+	protected int sumOfTiles;
+	/**
+	 * Stores the row at which the randomly generated tile was inserted.
+	 * When making a move from the parentState.
+	 */
+	protected int randomTileRow;
+	/**
+	 * Stores the column at which the randomly generated tile was inserted.
+	 * When making a move from the parentState.
+	 */
+	protected int randomTileCol;
 	
-	
+	/**
+	 * Constructs a board of size x size
+	 * @param size The dimension of the board
+	 */
 	public State(int size) {
 		this.size = size;
 		// upper left corner is (0, 0)
@@ -30,14 +77,17 @@ public class State {
 		downChildren= new ArrayList<State>();
 		parentState=null;
 		score = 0;
-		mergeStreak = 0;
 		sumOfTiles=0;
 		updateEmptyTiles();
 		maxTile = insertRandomTile();
 		maxTile = Math.max(maxTile, insertRandomTile());
 	}
 	
-	private int insertRandomTile() {
+	/**
+	 * Inserts a tile of value either 2 or 4 at a random empty position on the board.
+	 * @return The value of the tile inserted.
+	 */
+	protected int insertRandomTile() {
 		if (emptyTiles.size() == 0) {
 			// can't insert a tile
 			return 0;
@@ -62,6 +112,10 @@ public class State {
 		return val;
 	}
 
+	/**
+	 * Fills the {@link State#board} with zeros (empty tiles).
+	 * Used during initialization.
+	 */
 	private void fillZeros() {
 		for (int i = 0; i < size; ++i) {
 			for (int j = 0; j < size; ++j) {
@@ -70,6 +124,9 @@ public class State {
 		}
 	}
 
+	/**
+	 * Updates the list of {@link State#emptyTiles}.
+	 */
 	private void updateEmptyTiles(){
 		emptyTiles.clear();
 		for(int i=0;i<size;i++){
@@ -80,7 +137,12 @@ public class State {
 			}
 		}
 	}
-
+	
+	/**
+	 * Makes a game move in the specified direction.
+	 * @param dir The direction for the move.
+	 * @return A value greater than 0, if there was either any tile was shifted or merged. Else 0.
+	 */
 	public int move(MoveDirection dir) {
 		int moveCount, mergeCount;
 		moveCount = slideTiles(dir);
@@ -90,12 +152,15 @@ public class State {
 		updateEmptyTiles();
 		insertRandomTile();
 		
-		if (mergeCount > 0) mergeStreak++;
-		else mergeStreak = 0;
 		return moveCount + mergeCount;
 	}
-	
-	private int slideTiles(MoveDirection dir) {
+	/**
+	 * Slides the tiles in the specified direction, to close gaps.
+	 * Does NOT merge tiles.
+	 * @param dir The direction to slide tiles in.
+	 * @return A value greater than 0 if any tile was moved. Else 0.
+	 */
+	protected int slideTiles(MoveDirection dir) {
 		int tilesMoved = 0;
 		Position start, iter, lastEmpty;
 		switch(dir) {
@@ -155,7 +220,13 @@ public class State {
 		return tilesMoved;
 	}
 	
-	private int mergeTiles(MoveDirection dir) {
+	/**
+	 * Merge adjacent tiles, assuming a move was made in the specified direction.
+	 * Call {@link State#slideTiles(MoveDirection)} first.
+	 * @param dir The direction in which the move was made.
+	 * @return A value greater than 0 if any tiles were merged. Else 0.
+	 */
+	protected int mergeTiles(MoveDirection dir) {
 		Position start, iter;
 		int tilesMerged = 0;
 		switch(dir) {
@@ -210,6 +281,13 @@ public class State {
 		return tilesMerged;
 	}
 	
+	/**
+	 * Creates a clone of this object.
+	 * The children lists are not cloned. They are empty in the new object.
+	 * Can be used to make both siblings or children.
+	 * @param flag If flag==0, the {@link State#parentState} of the clone is set to the calling object. Else it is set to the parentState of the calling object.
+	 * @return The cloned object.
+	 */
 	public State clone(int flag) {
 		State ret = new State(size);
 		for (int i = 0; i < size; ++i) {
@@ -219,7 +297,6 @@ public class State {
 		}
 		ret.score = this.score;
 		ret.maxTile = this.maxTile;
-		ret.mergeStreak = this.mergeStreak;
 		ret.sumOfTiles = this.sumOfTiles;
 		ret.emptyTiles = new ArrayList<Integer>(this.emptyTiles);
 		ret.randomTileRow = this.randomTileRow;
@@ -231,28 +308,31 @@ public class State {
 		return ret;
 	}
 	
-	// perc is in range [0, 1]
-	// denotes what fraction of the score should be added as bonus
-	public void addBonusPoints(float perc) {
-		score += (int)(perc * score);
-	}
-	
+	/**
+	 * Getter for {@link State#maxTile}
+	 */
 	public int getMaxTile() {
 		return maxTile;
 	}
 
+	/**
+	 * @return Returns the number of empty tiles on the board.
+	 */
 	public int getNumEmptyTiles() {
 		return emptyTiles.size();
 	}
 	
+	/**
+	 * Getter for {@link State#score}
+	 */
 	public int getScore() {
 		return score;
 	}
 	
-	public int getMergeStreak() {
-		return mergeStreak;
-	}
-	
+	/**
+	 * Precondition: Board must be full.
+	 * @return True if there are tiles that can be merged.
+	 */
 	public Boolean noAdjacentsSame() {
 		for(int i=0;i<size;i++) {
 			for(int j=0;j<size;j++) {
@@ -265,6 +345,10 @@ public class State {
 		return true;
 	}
 
+	/**
+	 * @param dir Direction of the move.
+	 * @return Returns true if the list of children in the specified direction is empty. Else, False.
+	 */
 	public boolean isEmpty(MoveDirection dir) {
 		// TODO Auto-generated method stub
 		if(dir==MoveDirection.LEFT)
@@ -276,7 +360,12 @@ public class State {
 		else
 			return downChildren.isEmpty();
 	}
-
+	
+	/**
+	 * Inserts a state into the list of children.
+	 * @param newState The state to insert
+	 * @param dir The direction of the children list.
+	 */
 	public void insert(State newState, MoveDirection dir) {
 		// TODO Auto-generated method stub
 		if(dir==MoveDirection.LEFT)
@@ -289,7 +378,11 @@ public class State {
 			downChildren.add(newState);
 		
 	}
-
+	
+	/**
+	 * @param dir The children list direction to get the state from.
+	 * @return Returns a random state from the children list of the specified direction.
+	 */
 	public State getRandomChild(MoveDirection dir) {
 		// TODO Auto-generated method stub
 		Random rand = new Random(); 
@@ -323,6 +416,9 @@ public class State {
 		}
 	}
 
+	/**
+	 * Removes the current random tile and inserts a new one.
+	 */
 	public void updateRandomTile() {
 		sumOfTiles -= board[randomTileRow][randomTileCol];
 		board[randomTileRow][randomTileCol] = 0;
@@ -330,19 +426,30 @@ public class State {
 		insertRandomTile();
 	}
 
+	/**
+	 * Getter for {@link State#parentState}.
+	 */
 	public State getParentState() {
 		return parentState;
 	}
 
+	/**
+	 * @return True, if this is the root state.
+	 */
 	public boolean hasParent() {
-		// TODO Auto-generated method stub
 		return parentState!=null;
 	}
 	
+	/**
+	 * Getter for {@link State#sumOfTiles}
+	 */
 	public int getSumOfTiles() {
 		return sumOfTiles;
 	}
 	
+	/**
+	 * @return A String representation of {@link State#board}
+	 */
 	public String toString() {
 		StringBuilder sb = new StringBuilder();
 		for (int i = 0; i < size; ++i) {
