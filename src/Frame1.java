@@ -41,6 +41,8 @@ public class Frame1 extends javax.swing.JFrame {
         jLabel1.setText("Insert Name");
 
         jLabel2.setText("Insert Size of Board");
+        
+        jTextField2.setText("4");
 
         jButton1.setText("START GAME");
         jButton1.addActionListener(new java.awt.event.ActionListener() {
@@ -55,7 +57,7 @@ public class Frame1 extends javax.swing.JFrame {
 
         jComboBox1.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "32", "64", "128", "256", "512", "1024", "2048", "4096", " " }));
 
-        jComboBox2.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Classic", "Practice", "Simulation", "YYY", "ZZZ" }));
+        jComboBox2.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] {"Simulation", "Practice"}));
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);

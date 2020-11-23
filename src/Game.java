@@ -14,7 +14,7 @@ public class Game {
 	private boolean canUndo;
 	protected boolean gameOver;
 	
-	private NewJFrame frame;
+	protected NewJFrame frame;
 	
 	Game(int n,int target,String s) {
 		size = n;
@@ -26,13 +26,15 @@ public class Game {
 		frame=new NewJFrame(n,this,target,s);
 		frame.setVisible(true);
 		frame.display(currentState.board);
+		frame.jTextField12.setText("START");
+		frame.jTextField13.setText(currentState.getSumOfTiles()+"");
 		gameOver=false;
 		//// GUI init end
 	}
 	
 	public static Game fromGameMode(int n, int target, String s) {
 		if (s.equals("Simulation"))
-			return new SimulationGame(n, target, s);
+			return new SimulationGame(n, s);
 		else return new Game(n, target, s);
 	}
 	
@@ -61,6 +63,8 @@ public class Game {
 			currentState=newState;
 		}
 		frame.display(currentState.board);
+		frame.jTextField12.setText(dir.name());
+		frame.jTextField13.setText(currentState.getSumOfTiles()+"");
 		checkGameOver();
 	}
 	
@@ -82,6 +86,8 @@ public class Game {
 			return;
 		currentState=currentState.getParentState();
 		frame.display(currentState.board);
+		frame.jTextField12.setText("UNDO");
+		frame.jTextField13.setText(currentState.getSumOfTiles()+"");
 	}
 	
 }
