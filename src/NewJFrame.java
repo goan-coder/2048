@@ -91,6 +91,7 @@ public class NewJFrame extends javax.swing.JFrame implements KeyListener {
         undo.setFocusable(false);
     	lookahead.setFocusable(false);
     	resetLookahead.setFocusable(false);
+    	jComboBox1.setFocusable(false);
  
         jLabel1.setText("Current Game Mode is:");
 
@@ -209,10 +210,20 @@ public class NewJFrame extends javax.swing.JFrame implements KeyListener {
 
     private void lookaheadActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_lookaheadActionPerformed
         // TODO add your handling code here:
+    	String s=(String) jComboBox1.getSelectedItem();
+    	if(s=="LEFT")
+    		g.lookahead(MoveDirection.LEFT);
+    	else if(s=="RIGHT")
+    		g.lookahead(MoveDirection.RIGHT);
+    	else if(s=="UP")
+    		g.lookahead(MoveDirection.UP);
+    	else
+    		g.lookahead(MoveDirection.DOWN);
     }//GEN-LAST:event_lookaheadActionPerformed
 
     private void resetLookaheadActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_resetLookaheadActionPerformed
         // TODO add your handling code here:
+    	g.resetLookahead();
     }//GEN-LAST:event_resetLookaheadActionPerformed
     // Variables declaration - do not modify                     
     private javax.swing.JPanel jPanel1;
@@ -227,6 +238,8 @@ public class NewJFrame extends javax.swing.JFrame implements KeyListener {
     /** Handle the key-pressed event from the text field. */
     public void keyPressed(KeyEvent e) {
 //    	System.out.println("key pressed "+e.getKeyCode());
+    	if(g.isLookaheadFlag()==true)
+    		return;
         if(KeyEvent.getKeyText(e.getKeyCode())=="Left") {
         	g.move(MoveDirection.LEFT,true);
         }

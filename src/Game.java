@@ -13,7 +13,8 @@ public class Game {
 	protected int winningTile;
 	private boolean canUndo;
 	protected boolean gameOver;
-	
+	private boolean lookaheadFlag;
+	private State resetState;
 	protected NewJFrame frame;
 	
 	Game(int n,int target,String s) {
@@ -29,6 +30,7 @@ public class Game {
 		frame.jTextField12.setText("START");
 		frame.jTextField13.setText(currentState.getSumOfTiles()+"");
 		gameOver=false;
+		lookaheadFlag=false;
 		//// GUI init end
 	}
 	
@@ -69,6 +71,8 @@ public class Game {
 	}
 	
 	public void checkGameOver() {
+		if(lookaheadFlag==true)
+			return;
 		if(currentState.getMaxTile()>=winningTile) {
 			JOptionPane.showMessageDialog(null, "YOU WIN");
 			gameOver=true;
@@ -82,12 +86,43 @@ public class Game {
 
 	public void undo() {
 		// TODO Auto-generated method stub
-		if(currentState.hasParent()==false)
+		if(currentState.hasParent()==false || gameOver)
 			return;
 		currentState=currentState.getParentState();
 		frame.display(currentState.board);
 		frame.jTextField12.setText("UNDO");
 		frame.jTextField13.setText(currentState.getSumOfTiles()+"");
+		if(isLookaheadFlag()==true && currentState==resetState)
+			lookaheadFlag=false;
+		if(isLookaheadFlag()==true)
+			frame.jTextField12.setText("UNDO-L");
+		else
+			frame.jTextField12.setText("UNDO");
+	}
+	
+	public void lookahead(MoveDirection dir) {
+		if(gameOver)
+			return;
+		if(isLookaheadFlag()==false) {
+			resetState=currentState;
+			lookaheadFlag=true;
+		}
+		move(dir,false);
+		frame.jTextField12.setText("LOOKAHEAD "+dir.name());
+	}
+	public void resetLookahead() {
+		if(gameOver || isLookaheadFlag()==false) {
+			return;
+		}
+		currentState=resetState;
+		lookaheadFlag=false;
+		frame.display(currentState.board);
+		frame.jTextField12.setText("RESET LOOKAHEAD");
+		frame.jTextField13.setText(currentState.getSumOfTiles()+"");
+	}
+
+	public boolean isLookaheadFlag() {
+		return lookaheadFlag;
 	}
 	
 }
