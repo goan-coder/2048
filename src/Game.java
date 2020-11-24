@@ -175,4 +175,21 @@ public class Game {
 		return lookaheadFlag;
 	}
 	
+	
+	protected int getMaxAttainableTile() {
+		int res;
+		lookahead(MoveDirection.UP);
+		res = currentState.getMaxTile();
+		undo();
+		lookahead(MoveDirection.RIGHT);
+		Math.max(res, currentState.getMaxTile());
+		undo();
+		lookahead(MoveDirection.DOWN);
+		Math.max(res, currentState.getMaxTile());
+		undo();
+		lookahead(MoveDirection.LEFT);
+		Math.max(res, currentState.getMaxTile());
+		undo();
+		return res;
+	}
 }
