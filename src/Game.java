@@ -1,25 +1,50 @@
-import java.time.Duration;
-import java.time.LocalDateTime;
-import java.util.Random;
-
 import javax.swing.JOptionPane;
 
+/**
+ * Manages the game.
+ */
 public class Game {
+	/**
+	 * The name of the game mode.
+	 */
 	private String gameMode;
+	/**
+	 * The current state of the game.
+	 */
 	protected State currentState;
+	/**
+	 * The size of the board.
+	 */
 	private int size;
-	private LocalDateTime startTime;
-	private Duration maxTime;
+	/**
+	 * One generating a tile of this value, the game is won.
+	 */
 	protected int winningTile;
-	private boolean canUndo;
+	/**
+	 * If the game is over gameOver will be set to True.
+	 */
 	protected boolean gameOver;
+	/**
+	 * Indicates if we are in look ahead mode, True if so.
+	 */
 	private boolean lookaheadFlag;
+	/**
+	 * The state to original state to reset to, on resetting the look ahead.
+	 */
 	private State resetState;
+	/**
+	 * The GUI frame for this game.
+	 */
 	protected NewJFrame frame;
 	
+	/**
+	 * Creates a new game.
+	 * @param n The size of the board, n x n.
+	 * @param target The target winning tile.
+	 * @param s The name of the game mode.
+	 */
 	Game(int n,int target,String s) {
 		size = n;
-		startTime = LocalDateTime.now();
 		currentState = new State(size);
 		winningTile=target;
 		gameMode=s;
@@ -34,16 +59,25 @@ public class Game {
 		//// GUI init end
 	}
 	
+	/**
+	 * Factory to make specialized games based on the game mode.
+	 * @param n The size of the board, n x n.
+	 * @param target The target win condition (may be winning tile or sum of tiles, based on game mode).
+	 * @param s The name of the game mode.
+	 * @return The created Game object.
+	 */
 	public static Game fromGameMode(int n, int target, String s) {
 		if (s.equals("Simulation"))
 			return new SimulationGame(n, s);
 		else return new Game(n, target, s);
 	}
 	
+	/**
+	 * Makes a move in the specified direction, reusing previously calculated moves, if possible.
+	 * @param dir The direction to move in.
+	 * @param flag True-> make a new state, False-> use existing state
+	 */
 	public void move(MoveDirection dir,Boolean flag) {
-		// TODO: maybe some more stuff to do here
-		// flag=true -> makeNewState instead of using existing
-		// flag=false -> useExistingState;
 		if(gameOver==true)
 			return;
 		State newState;
@@ -70,6 +104,9 @@ public class Game {
 		checkGameOver();
 	}
 	
+	/**
+	 * Check and set {@link Game#gameOver}
+	 */
 	public void checkGameOver() {
 		if(lookaheadFlag==true)
 			return;
@@ -84,8 +121,10 @@ public class Game {
 		
 	}
 
+	/**
+	 * Undo the last move.
+	 */
 	public void undo() {
-		// TODO Auto-generated method stub
 		if(currentState.hasParent()==false || gameOver)
 			return;
 		currentState=currentState.getParentState();
@@ -100,6 +139,10 @@ public class Game {
 			frame.jTextField12.setText("UNDO");
 	}
 	
+	 /**
+	  * Lookahead in the specified direction
+	  * @param dir The direction to lookahead in.
+	  */
 	public void lookahead(MoveDirection dir) {
 		if(gameOver)
 			return;
@@ -110,6 +153,10 @@ public class Game {
 		move(dir,false);
 		frame.jTextField12.setText("LOOKAHEAD "+dir.name());
 	}
+	
+	/**
+	 * Resets the lookahead status and reverts to the original state before lookahead.
+	 */
 	public void resetLookahead() {
 		if(gameOver || isLookaheadFlag()==false) {
 			return;
@@ -121,6 +168,9 @@ public class Game {
 		frame.jTextField13.setText(currentState.getSumOfTiles()+"");
 	}
 
+	/**
+	 * Returns true if in lookahead state.
+	 */
 	public boolean isLookaheadFlag() {
 		return lookaheadFlag;
 	}
