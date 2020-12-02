@@ -7,8 +7,8 @@ When in the root directory of this project:
 2. Run on the terminal: `java Frame1`
 3. A window will pop up.
 4. Enter your name, size of board and select your desired board size and Game Mode
-Currently, two game modes are supported:
-**Practice**: Classic 2048 with unlimited undo and lookahead moves.
+Currently, two game modes are supported: <br/>
+**Practice**: Classic 2048 with unlimited undo and lookahead moves. <br/>
 **Simulation**: The game executes random moves until the board reaches a sum of 8. If the sum exceeds 8, it will backtrack.
 
 
